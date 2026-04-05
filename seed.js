@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAHu90nH0kTqhcnhg9mpOeE-HKbzi-J24k",
@@ -12,33 +12,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-const leadershipData = [
-  {
-    id: "president",
-    title: "President",
-    name: "Hon'ble President of India",
-    image: "https://picsum.photos/seed/president/400/500",
-    message: "The Central University of South Bihar exemplifies the commitment to excellence in higher education. I congratulate the university on its remarkable journey and urge it to continue fostering academic brilliance and societal contribution.",
-    tenure: "President of India"
-  },
-  {
-    id: "chancellor",
-    title: "Chancellor",
-    name: "Prof. (Dr.) K. G. S. Ojha",
-    image: "https://picsum.photos/seed/chancellor/400/500",
-    message: "As the Chancellor, I am proud of our university's achievements. We remain committed to providing quality education and fostering research that contributes to national development.",
-    tenure: "2022 - Present"
-  },
-  {
-    id: "vice-chancellor",
-    title: "Vice Chancellor",
-    name: "Prof. (Dr.) K. K. Sharma",
-    image: "https://picsum.photos/seed/vc/400/500",
-    message: "Our vision is to make CUSB a world-class university. We focus on innovative teaching, cutting-edge research, and holistic development of students to prepare them for global challenges.",
-    tenure: "2023 - Present"
-  }
-];
 
 const departments = [
   {
@@ -61,14 +34,23 @@ const departments = [
       "Foster entrepreneurship in agriculture sector"
     ],
     facilities: ["Smart Greenhouse", "Soil Testing Lab", "Plant Pathology Lab", "Entomology Lab", "Agronomy Field", "Seed Technology Lab", "Agricultural Economics Lab"],
-    image: "https://picsum.photos/seed/agriculture/1200/600",
-    coverImage: "https://picsum.photos/seed/agri-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/agri1/1200/600",
+      "https://picsum.photos/seed/agri2/1200/600",
+      "https://picsum.photos/seed/agri3/1200/600"
+    ],
+    studentCount: 180,
+    placementRate: 78,
+    researchPapers: 120,
+    fundedProjects: 18,
+    researchGrants: 75,
+    infrastructure: "The department houses state-of-the-art laboratories for soil analysis, plant pathology, and biotechnology research. Our smart greenhouse enables year-round research on crop varieties."
   },
   {
     id: "biotechnology",
     name: "Department of Biotechnology",
     shortName: "Biotechnology",
-    description: "The Department of Biotechnology offers comprehensive programs in molecular biology, genetics, industrial biotechnology, and bioinformatics. Students engage in cutting-edge research in drug discovery, genetic engineering, and agricultural biotechnology. The department bridges the gap between biology and technology.",
+    description: "The Department of Biotechnology offers comprehensive programs in molecular biology, genetics, industrial biotechnology, and bioinformatics. Students engage in cutting-edge research in drug discovery, genetic engineering, and agricultural biotechnology.",
     programs: ["B.Sc. (Hons) Biotechnology", "M.Sc. Biotechnology", "M.Sc. Bioinformatics", "Ph.D. Biotechnology"],
     established: 2014,
     hod: "Dr. Priya Singh",
@@ -84,14 +66,23 @@ const departments = [
       "Develop skilled human resources for biotech sector"
     ],
     facilities: ["Molecular Biology Lab", "Cell Culture Lab", "Bioinformatics Center", "Fermentation Unit", "Genetic Engineering Lab", "Protein Analysis Lab", "Microbiology Lab"],
-    image: "https://picsum.photos/seed/biotechnology/1200/600",
-    coverImage: "https://picsum.photos/seed/biotech-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/biotech1/1200/600",
+      "https://picsum.photos/seed/biotech2/1200/600",
+      "https://picsum.photos/seed/biotech3/1200/600"
+    ],
+    studentCount: 150,
+    placementRate: 85,
+    researchPapers: 95,
+    fundedProjects: 12,
+    researchGrants: 60,
+    infrastructure: "The department features advanced molecular biology laboratories, bioinformatics infrastructure, and BSL-2 certified facilities for genetic engineering research."
   },
   {
     id: "chemistry",
     name: "Department of Chemistry",
     shortName: "Chemistry",
-    description: "The Department of Chemistry provides rigorous training in organic, inorganic, physical, and analytical chemistry. Our research addresses challenges in drug synthesis, materials science, and environmental chemistry. The department has well-equipped laboratories and research facilities.",
+    description: "The Department of Chemistry provides rigorous training in organic, inorganic, physical, and analytical chemistry. Our research addresses challenges in drug synthesis, materials science, and environmental chemistry.",
     programs: ["B.Sc. (Hons) Chemistry", "M.Sc. Chemistry", "M.Sc. Analytical Chemistry", "Ph.D. Chemistry"],
     established: 2014,
     hod: "Dr. Anil Kumar",
@@ -107,14 +98,23 @@ const departments = [
       "Produce industry-ready chemistry graduates"
     ],
     facilities: ["Organic Synthesis Lab", "Spectroscopy Lab", "Analytical Lab", "Physical Chemistry Lab", "Instrumentation Center", "Computational Chemistry Lab", "Inorganic Chemistry Lab"],
-    image: "https://picsum.photos/seed/chemistry/1200/600",
-    coverImage: "https://picsum.photos/seed/chem-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/chem1/1200/600",
+      "https://picsum.photos/seed/chem2/1200/600",
+      "https://picsum.photos/seed/chem3/1200/600"
+    ],
+    studentCount: 140,
+    placementRate: 72,
+    researchPapers: 150,
+    fundedProjects: 20,
+    researchGrants: 85,
+    infrastructure: "Equipped with advanced spectroscopic instruments including NMR, UV-Vis, FTIR, and HPLC for comprehensive chemical analysis and research."
   },
   {
     id: "commerce",
     name: "Department of Commerce & Business Studies",
     shortName: "Commerce",
-    description: "The Department of Commerce & Business Studies offers programs in accounting, finance, taxation, and business management. Our curriculum prepares students for careers in corporate finance, banking, and entrepreneurship. The department emphasizes practical learning through case studies and industry projects.",
+    description: "The Department of Commerce & Business Studies offers programs in accounting, finance, taxation, and business management. Our curriculum prepares students for careers in corporate finance, banking, and entrepreneurship.",
     programs: ["B.Com. (Hons)", "M.Com.", "MBA", "M.Com. (Finance)", "Ph.D. Commerce"],
     established: 2014,
     hod: "Dr. Meena Sharma",
@@ -130,14 +130,23 @@ const departments = [
       "Bridge academia and industry through collaborations"
     ],
     facilities: ["Computer Lab", "Accounting Lab", "Library", "Seminar Hall", "Placement Cell", "Incubation Center", "Auditing Room"],
-    image: "https://picsum.photos/seed/commerce/1200/600",
-    coverImage: "https://picsum.photos/seed/commerce-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/com1/1200/600",
+      "https://picsum.photos/seed/com2/1200/600",
+      "https://picsum.photos/seed/com3/1200/600"
+    ],
+    studentCount: 250,
+    placementRate: 90,
+    researchPapers: 80,
+    fundedProjects: 8,
+    researchGrants: 40,
+    infrastructure: "Modern computer labs with financial software, a dedicated incubation center for startups, and industry-standard accounting software for practical training."
   },
   {
     id: "computer-science",
     name: "Department of Computer Science",
     shortName: "Computer Science",
-    description: "The Department of Computer Science offers programs covering software development, artificial intelligence, data science, cybersecurity, and cloud computing. Students gain practical experience through projects and industry collaborations. The department has state-of-the-art computing facilities.",
+    description: "The Department of Computer Science offers programs covering software development, artificial intelligence, data science, cybersecurity, and cloud computing. Students gain practical experience through projects and industry collaborations.",
     programs: ["B.Sc. (Hons) Computer Science", "M.Sc. Computer Science", "MCA", "M.Tech. Computer Science", "Ph.D. Computer Science"],
     established: 2014,
     hod: "Dr. Vikram Singh",
@@ -153,14 +162,23 @@ const departments = [
       "Foster innovation and entrepreneurship in technology"
     ],
     facilities: ["High-Performance Computing Lab", "AI/ML Lab", "Cybersecurity Lab", "Cloud Computing Lab", "Project Lab", "Software Development Lab", "Data Science Lab"],
-    image: "https://picsum.photos/seed/computer/1200/600",
-    coverImage: "https://picsum.photos/seed/cs-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/cs1/1200/600",
+      "https://picsum.photos/seed/cs2/1200/600",
+      "https://picsum.photos/seed/cs3/1200/600"
+    ],
+    studentCount: 300,
+    placementRate: 95,
+    researchPapers: 200,
+    fundedProjects: 25,
+    researchGrants: 120,
+    infrastructure: "High-performance computing cluster, dedicated GPU servers for AI/ML, cybersecurity labs, and cloud computing infrastructure with AWS and Azure partnerships."
   },
   {
     id: "economics",
     name: "Department of Economics",
     shortName: "Economics",
-    description: "The Department of Economics offers comprehensive programs in microeconomics, macroeconomics, econometrics, and development economics. Our research focuses on Indian economic policy and global economic issues. Students develop strong analytical and quantitative skills.",
+    description: "The Department of Economics offers comprehensive programs in microeconomics, macroeconomics, econometrics, and development economics. Our research focuses on Indian economic policy and global economic issues.",
     programs: ["B.A. (Hons) Economics", "M.A. Economics", "M.A. Development Economics", "Ph.D. Economics"],
     established: 2014,
     hod: "Dr. Sunita Devi",
@@ -176,14 +194,23 @@ const departments = [
       "Promote understanding of economic development"
     ],
     facilities: ["Economics Lab", "Statistical Software", "Research Cell", "Seminar Library", "Computer Lab", "Data Analysis Center", "Economic Observatory"],
-    image: "https://picsum.photos/seed/economics/1200/600",
-    coverImage: "https://picsum.photos/seed/econ-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/econ1/1200/600",
+      "https://picsum.photos/seed/econ2/1200/600",
+      "https://picsum.photos/seed/econ3/1200/600"
+    ],
+    studentCount: 120,
+    placementRate: 75,
+    researchPapers: 90,
+    fundedProjects: 15,
+    researchGrants: 55,
+    infrastructure: "Economics research lab with statistical software including STATA, SPSS, and EViews for data analysis and econometric modeling."
   },
   {
     id: "english",
     name: "Department of English",
     shortName: "English",
-    description: "The Department of English offers programs in literature, linguistics, creative writing, and communication studies. Students develop critical thinking and communication skills essential for various career paths. The department fosters appreciation for diverse literary traditions.",
+    description: "The Department of English offers programs in literature, linguistics, creative writing, and communication studies. Students develop critical thinking and communication skills essential for various career paths.",
     programs: ["B.A. (Hons) English", "M.A. English", "M.A. Linguistics", "Ph.D. English"],
     established: 2014,
     hod: "Dr. Amitabh Tripathi",
@@ -199,14 +226,23 @@ const departments = [
       "Foster creative writing and critical thinking"
     ],
     facilities: ["Language Lab", "Media Room", "Theater Studio", "Reading Room", "E-Library", "Audio-Visual Lab", "Creative Writing Center"],
-    image: "https://picsum.photos/seed/english/1200/600",
-    coverImage: "https://picsum.photos/seed/eng-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/eng1/1200/600",
+      "https://picsum.photos/seed/eng2/1200/600",
+      "https://picsum.photos/seed/eng3/1200/600"
+    ],
+    studentCount: 160,
+    placementRate: 70,
+    researchPapers: 75,
+    fundedProjects: 6,
+    researchGrants: 30,
+    infrastructure: "State-of-the-art language laboratory with digital resources, theater studio for dramatics, and media room for broadcasting practice."
   },
   {
     id: "hindi",
     name: "Department of Hindi",
     shortName: "Hindi",
-    description: "The Department of Hindi focuses on Hindi literature, linguistics, translation studies, and creative writing. The department preserves and promotes Hindi language and literature through teaching and research. Students explore classical and modern Hindi literature.",
+    description: "The Department of Hindi focuses on Hindi literature, linguistics, translation studies, and creative writing. The department preserves and promotes Hindi language and literature through teaching and research.",
     programs: ["B.A. (Hons) Hindi", "M.A. Hindi", "M.A. Hindi Linguistics", "Ph.D. Hindi"],
     established: 2014,
     hod: "Dr. Geeta Prasad",
@@ -222,14 +258,23 @@ const departments = [
       "Preserve and promote Hindi cultural heritage"
     ],
     facilities: ["Language Lab", "Media Center", "Translation Lab", "Archive Room", "Seminar Hall", "Digital Library", "Literary Museum"],
-    image: "https://picsum.photos/seed/hindi/1200/600",
-    coverImage: "https://picsum.photos/seed/hindi-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/hin1/1200/600",
+      "https://picsum.photos/seed/hin2/1200/600",
+      "https://picsum.photos/seed/hin3/1200/600"
+    ],
+    studentCount: 130,
+    placementRate: 65,
+    researchPapers: 60,
+    fundedProjects: 5,
+    researchGrants: 25,
+    infrastructure: "Digital language lab, translation studio, and archive room housing rare Hindi manuscripts and literary works."
   },
   {
     id: "history",
     name: "Department of History",
     shortName: "History",
-    description: "The Department of History offers programs covering ancient, medieval, and modern Indian history, as well as world history. Students explore historical narratives and develop research skills. The department encourages critical analysis of historical events and their contemporary relevance.",
+    description: "The Department of History offers programs covering ancient, medieval, and modern Indian history, as well as world history. Students explore historical narratives and develop research skills.",
     programs: ["B.A. (Hons) History", "M.A. History", "M.A. Ancient History", "M.A. Medieval History", "Ph.D. History"],
     established: 2014,
     hod: "Dr. Rameshwar Prasad",
@@ -245,14 +290,23 @@ const departments = [
       "Foster understanding of cultural heritage"
     ],
     facilities: ["History Museum", "Archive Center", "Research Lab", "Seminar Room", "Document Room", "Archaeological Lab", "Digital Archives"],
-    image: "https://picsum.photos/seed/history/1200/600",
-    coverImage: "https://picsum.photos/seed/hist-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/hist1/1200/600",
+      "https://picsum.photos/seed/hist2/1200/600",
+      "https://picsum.photos/seed/hist3/1200/600"
+    ],
+    studentCount: 110,
+    placementRate: 60,
+    researchPapers: 85,
+    fundedProjects: 10,
+    researchGrants: 45,
+    infrastructure: "History museum with artifacts, archaeological laboratory, and digital archive for historical documents and manuscripts."
   },
   {
     id: "law",
     name: "Department of Law & Governance",
     shortName: "Law",
-    description: "The Department of Law offers comprehensive legal education covering constitutional law, criminal law, corporate law, and international law. Students receive practical training through moot courts and legal aid clinics. The department prepares students for judicial services and legal practice.",
+    description: "The Department of Law offers comprehensive legal education covering constitutional law, criminal law, corporate law, and international law. Students receive practical training through moot courts and legal aid clinics.",
     programs: ["B.A. LL.B (Hons)", "LL.M.", "LL.M. (Constitutional Law)", "Ph.D. Law"],
     established: 2014,
     hod: "Dr. Justice Raghunath Singh",
@@ -268,14 +322,23 @@ const departments = [
       "Prepare students for judicial and bar examinations"
     ],
     facilities: ["Moot Court Hall", "Legal Aid Clinic", "Library", "Computer Lab", "Seminar Room", "Drafting Lab", "Alternative Dispute Resolution Center"],
-    image: "https://picsum.photos/seed/law/1200/600",
-    coverImage: "https://picsum.photos/seed/law-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/law1/1200/600",
+      "https://picsum.photos/seed/law2/1200/600",
+      "https://picsum.photos/seed/law3/1200/600"
+    ],
+    studentCount: 140,
+    placementRate: 82,
+    researchPapers: 70,
+    fundedProjects: 8,
+    researchGrants: 35,
+    infrastructure: "Fully equipped moot court hall, legal aid clinic serving community, and alternative dispute resolution center for practical training."
   },
   {
     id: "mathematics",
     name: "Department of Mathematics",
     shortName: "Mathematics",
-    description: "The Department of Mathematics offers programs in pure and applied mathematics, statistics, and computational mathematics. The department fosters analytical thinking and problem-solving skills essential for various careers. Students engage with theoretical foundations and practical applications.",
+    description: "The Department of Mathematics offers programs in pure and applied mathematics, statistics, and computational mathematics. The department fosters analytical thinking and problem-solving skills.",
     programs: ["B.Sc. (Hons) Mathematics", "M.Sc. Mathematics", "M.Sc. Statistics", "M.A. Mathematics", "Ph.D. Mathematics"],
     established: 2014,
     hod: "Dr. Naveen Chandra",
@@ -291,14 +354,23 @@ const departments = [
       "Prepare students for competitive examinations"
     ],
     facilities: ["Computing Lab", "Mathematics Lab", "Research Room", "Seminar Hall", "Library", "Statistics Lab", "Modeling Lab"],
-    image: "https://picsum.photos/seed/mathematics/1200/600",
-    coverImage: "https://picsum.photos/seed/math-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/math1/1200/600",
+      "https://picsum.photos/seed/math2/1200/600",
+      "https://picsum.photos/seed/math3/1200/600"
+    ],
+    studentCount: 125,
+    placementRate: 68,
+    researchPapers: 100,
+    fundedProjects: 12,
+    researchGrants: 50,
+    infrastructure: "Computer lab with mathematical software including MATLAB, Mathematica, and statistical packages for research and teaching."
   },
   {
     id: "physics",
     name: "Department of Physics",
     shortName: "Physics",
-    description: "The Department of Physics offers comprehensive programs in theoretical and experimental physics. Students engage in research in condensed matter physics, particle physics, and astrophysics. The department has well-equipped laboratories for hands-on learning.",
+    description: "The Department of Physics offers comprehensive programs in theoretical and experimental physics. Students engage in research in condensed matter physics, particle physics, and astrophysics.",
     programs: ["B.Sc. (Hons) Physics", "M.Sc. Physics", "M.Sc. Electronics", "M.Tech. Materials Science", "Ph.D. Physics"],
     established: 2014,
     hod: "Dr. Subhash Chandra",
@@ -314,8 +386,17 @@ const departments = [
       "Prepare students for scientific careers"
     ],
     facilities: ["Physics Lab", "Electronics Lab", "Dark Room", "Computational Lab", "Telescope", "Material Science Lab", "Optics Lab"],
-    image: "https://picsum.photos/seed/physics/1200/600",
-    coverImage: "https://picsum.photos/seed/phys-cover/1600/800"
+    images: [
+      "https://picsum.photos/seed/phys1/1200/600",
+      "https://picsum.photos/seed/phys2/1200/600",
+      "https://picsum.photos/seed/phys3/1200/600"
+    ],
+    studentCount: 145,
+    placementRate: 72,
+    researchPapers: 130,
+    fundedProjects: 22,
+    researchGrants: 95,
+    infrastructure: "Well-equipped physics laboratories, astronomical observatory with telescope, and computational facilities for theoretical research."
   }
 ];
 
@@ -359,16 +440,16 @@ const facultyData = [
 ];
 
 const newsData = [
-  { title: "CUSB Launches New PhD Programs in AI and Data Science", content: "Central University of South Bihar announces new doctoral programs in Artificial Intelligence and Data Science starting from academic year 2026-27. The programs will focus on cutting-edge research in machine learning, deep learning, and big data analytics.", date: "22 Mar 2026", type: "Announcement", image: "https://picsum.photos/seed/news1/1200/700" },
-  { title: "CUSB Ranked Among Top 50 Universities in NIRF 2026", content: "Central University of South Bihar has achieved a significant rank improvement in the National Institutional Ranking Framework 2026. The university now ranks 47th among all Indian universities, reflecting our commitment to academic excellence.", date: "18 Mar 2026", type: "Achievement", image: "https://picsum.photos/seed/news2/1200/700" },
-  { title: "International Conference on Sustainable Development at CUSB", content: "CUSB hosts international conference on sustainable development with participants from 15 countries. The conference focused on environmental conservation, renewable energy, and sustainable agriculture practices.", date: "10 Mar 2026", type: "Event", image: "https://picsum.photos/seed/news3/1200/700" },
-  { title: "CUSB Students Win National Innovation Challenge 2026", content: "Team from Central University of South Bihar wins first prize in National Innovation Challenge with their startup idea on agricultural technology. The team received INR 10 lakhs seed funding.", date: "5 Mar 2026", type: "Achievement", image: "https://picsum.photos/seed/news4/1200/700" },
-  { title: "New Research Center for Climate Change inaugurated at CUSB", content: "Honorable Vice Chancellor inaugurates new research center focused on climate change and environmental sustainability. The center will conduct interdisciplinary research on climate adaptation strategies.", date: "1 Mar 2026", type: "Press Release", image: "https://picsum.photos/seed/news5/1200/700" },
-  { title: "CUSB Signs MoU with IIT Patna for Joint Research", content: "Central University of South Bihar has signed a memorandum of understanding with IIT Patna for collaborative research in science and technology domains.", date: "25 Feb 2026", type: "Achievement", image: "https://picsum.photos/seed/news6/1200/700" },
-  { title: "Placement Season 2026: 95% Students Get Campus Offers", content: "The placement season 2026 has been highly successful with 95% of eligible students receiving campus placement offers from top companies including Google, Microsoft, and TCS.", date: "20 Feb 2026", type: "Achievement", image: "https://picsum.photos/seed/news7/1200/700" },
-  { title: "New Library Building Inaugurated by Hon'ble Chancellor", content: "A new state-of-the-art library building with digital resources, study rooms, and 24/7 access has been inaugurated to enhance the learning experience.", date: "15 Feb 2026", type: "Press Release", image: "https://picsum.photos/seed/news8/1200/700" },
-  { title: "CUSB Hosts National Sports Meet 2026", content: "University hosts the National Inter-University Sports Meet with over 50 universities participating in various sports categories.", date: "10 Feb 2026", type: "Event", image: "https://picsum.photos/seed/news9/1200/700" },
-  { title: "Research Paper Published in Nature Journal", content: "Dr. Subhash Chandra from Physics department publishes groundbreaking research on quantum materials in Nature journal.", date: "5 Feb 2026", type: "Achievement", image: "https://picsum.photos/seed/news10/1200/700" }
+  { title: "CUSB Launches New PhD Programs in AI and Data Science", content: "Central University of South Bihar announces new doctoral programs in Artificial Intelligence and Data Science starting from academic year 2026-27.", date: "22 Mar 2026", type: "Announcement", image: "https://picsum.photos/seed/news1/1200/700" },
+  { title: "CUSB Ranked Among Top 50 Universities in NIRF 2026", content: "Central University of South Bihar has achieved a significant rank improvement in the National Institutional Ranking Framework 2026.", date: "18 Mar 2026", type: "Achievement", image: "https://picsum.photos/seed/news2/1200/700" },
+  { title: "International Conference on Sustainable Development at CUSB", content: "CUSB hosts international conference on sustainable development with participants from 15 countries.", date: "10 Mar 2026", type: "Event", image: "https://picsum.photos/seed/news3/1200/700" },
+  { title: "CUSB Students Win National Innovation Challenge 2026", content: "Team from Central University of South Bihar wins first prize in National Innovation Challenge.", date: "5 Mar 2026", type: "Achievement", image: "https://picsum.photos/seed/news4/1200/700" },
+  { title: "New Research Center for Climate Change inaugurated at CUSB", content: "Honorable Vice Chancellor inaugurates new research center focused on climate change.", date: "1 Mar 2026", type: "Press Release", image: "https://picsum.photos/seed/news5/1200/700" },
+  { title: "CUSB Signs MoU with IIT Patna for Joint Research", content: "Central University of South Bihar has signed a memorandum of understanding with IIT Patna.", date: "25 Feb 2026", type: "Achievement", image: "https://picsum.photos/seed/news6/1200/700" },
+  { title: "Placement Season 2026: 95% Students Get Campus Offers", content: "The placement season 2026 has been highly successful with 95% of eligible students receiving campus placement offers.", date: "20 Feb 2026", type: "Achievement", image: "https://picsum.photos/seed/news7/1200/700" },
+  { title: "New Library Building Inaugurated by Hon'ble Chancellor", content: "A new state-of-the-art library building with digital resources has been inaugurated.", date: "15 Feb 2026", type: "Press Release", image: "https://picsum.photos/seed/news8/1200/700" },
+  { title: "CUSB Hosts National Sports Meet 2026", content: "University hosts the National Inter-University Sports Meet with over 50 universities participating.", date: "10 Feb 2026", type: "Event", image: "https://picsum.photos/seed/news9/1200/700" },
+  { title: "Research Paper Published in Nature Journal", content: "Dr. Subhash Chandra from Physics department publishes groundbreaking research.", date: "5 Feb 2026", type: "Achievement", image: "https://picsum.photos/seed/news10/1200/700" }
 ];
 
 const announcementsData = [
@@ -385,16 +466,16 @@ const announcementsData = [
 ];
 
 const noticesData = [
-  { title: "Examination Schedule for Semester End 2026", category: "Examination", date: "25 Mar 2026", link: "#", description: "The examination timetable for the end semester examinations has been published. Students are advised to check their respective department notices." },
-  { title: "Fee Payment Deadline - Last Date 30th March 2026", category: "Fee", date: "24 Mar 2026", link: "#", description: "All students must pay their semester fees by 30th March 2026. Late fee will be applicable after the deadline." },
-  { title: "Hostel Allotment List Published", category: "Hostel", date: "22 Mar 2026", link: "#", description: "The hostel allotment list for the academic year 2026-27 has been published. Students can check their allotment status online." },
-  { title: "Research Methodology Workshop Registration Open", category: "Workshop", date: "20 Mar 2026", link: "#", description: "A 5-day workshop on Research Methodology will be conducted from 1st to 5th April 2026. Register before 28th March." },
-  { title: "Summer Internship Program 2026", category: "Placement", date: "18 Mar 2026", link: "#", description: "Applications are open for the Summer Internship Program 2026. Students can apply through the placement portal." },
-  { title: "Library Holiday Schedule", category: "General", date: "15 Mar 2026", link: "#", description: "The library will remain closed on public holidays. Special arrangements during exam season will be notified separately." },
-  { title: "Anti-Ragging Committee Meeting", category: "General", date: "12 Mar 2026", link: "#", description: "An anti-ragging committee meeting will be held on 15th March 2026 at 11 AM in the Conference Hall." },
-  { title: "Scholarship Applications Open", category: "Scholarship", date: "10 Mar 2026", link: "#", description: "National Scholarship Portal applications are now open. Last date for submission is 30th April 2026." },
-  { title: "Convocation 2026 Date Announced", category: "Event", date: "8 Mar 2026", link: "#", description: "The 8th Annual Convocation will be held on 15th April 2026. Students completing their degrees must register online." },
-  { title: "Online Examination Guidelines", category: "Examination", date: "5 Mar 2026", link: "#", description: "Guidelines for online examinations have been published. Students must follow the instructions carefully." }
+  { title: "Examination Schedule for Semester End 2026", category: "Examination", date: "25 Mar 2026", link: "#", description: "The examination timetable for the end semester examinations has been published." },
+  { title: "Fee Payment Deadline - Last Date 30th March 2026", category: "Fee", date: "24 Mar 2026", link: "#", description: "All students must pay their semester fees by 30th March 2026." },
+  { title: "Hostel Allotment List Published", category: "Hostel", date: "22 Mar 2026", link: "#", description: "The hostel allotment list for the academic year 2026-27 has been published." },
+  { title: "Research Methodology Workshop Registration Open", category: "Workshop", date: "20 Mar 2026", link: "#", description: "A 5-day workshop on Research Methodology will be conducted from 1st to 5th April 2026." },
+  { title: "Summer Internship Program 2026", category: "Placement", date: "18 Mar 2026", link: "#", description: "Applications are open for the Summer Internship Program 2026." },
+  { title: "Library Holiday Schedule", category: "General", date: "15 Mar 2026", link: "#", description: "The library will remain closed on public holidays." },
+  { title: "Anti-Ragging Committee Meeting", category: "General", date: "12 Mar 2026", link: "#", description: "An anti-ragging committee meeting will be held on 15th March 2026." },
+  { title: "Scholarship Applications Open", category: "Scholarship", date: "10 Mar 2026", link: "#", description: "National Scholarship Portal applications are now open." },
+  { title: "Convocation 2026 Date Announced", category: "Event", date: "8 Mar 2026", link: "#", description: "The 8th Annual Convocation will be held on 15th April 2026." },
+  { title: "Online Examination Guidelines", category: "Examination", date: "5 Mar 2026", link: "#", description: "Guidelines for online examinations have been published." }
 ];
 
 const eventsData = [
@@ -415,16 +496,10 @@ const eventsData = [
 const syllabusData = [
   { department: "computer-science", program: "B.Sc", semester: "1", subjects: ["Mathematics-I", "Physics", "Computer Fundamentals", "C Programming", "English Communication"], year: "2024" },
   { department: "computer-science", program: "B.Sc", semester: "2", subjects: ["Mathematics-II", "Chemistry", "Data Structures", "C++ Programming", "Environmental Studies"], year: "2024" },
-  { department: "computer-science", program: "B.Sc", semester: "3", subjects: ["Discrete Mathematics", "Object Oriented Programming", "Database Management", "Digital Electronics", "Software Engineering"], year: "2024" },
   { department: "computer-science", program: "M.Sc", semester: "1", subjects: ["Advanced Algorithms", "Machine Learning", "Database Systems", "Research Methodology", "Probability & Statistics"], year: "2024" },
   { department: "chemistry", program: "B.Sc", semester: "1", subjects: ["Organic Chemistry-I", "Inorganic Chemistry-I", "Physical Chemistry-I", "Mathematics for Chemists", "English"], year: "2024" },
-  { department: "chemistry", program: "M.Sc", semester: "1", subjects: ["Advanced Organic Chemistry", "Coordination Chemistry", "Thermodynamics", "Spectroscopy", "Laboratory Practice"], year: "2024" },
   { department: "commerce", program: "B.Com", semester: "1", subjects: ["Financial Accounting", "Business Mathematics", "Business Economics", "Business Communication", "Computer Applications"], year: "2024" },
-  { department: "commerce", program: "M.Com", semester: "1", subjects: ["Advanced Accounting", "Business Finance", "Marketing Management", "Research Methods", "Human Resource Management"], year: "2024" },
-  { department: "physics", program: "B.Sc", semester: "1", subjects: ["Mechanics", "Wave Motion", "Optics", "Mathematics for Physics-I", "English Communication"], year: "2024" },
-  { department: "physics", program: "M.Sc", semester: "1", subjects: ["Classical Mechanics", "Quantum Mechanics-I", "Electromagnetic Theory", "Mathematical Physics", "Statistical Physics"], year: "2024" },
-  { department: "mathematics", program: "B.Sc", semester: "1", subjects: ["Calculus", "Linear Algebra", "Differential Equations", "Set Theory", "English"], year: "2024" },
-  { department: "mathematics", program: "M.Sc", semester: "1", subjects: ["Real Analysis", "Abstract Algebra", "Topology", "Complex Analysis", "Measure Theory"], year: "2024" }
+  { department: "physics", program: "B.Sc", semester: "1", subjects: ["Mechanics", "Wave Motion", "Optics", "Mathematics for Physics-I", "English Communication"], year: "2024" }
 ];
 
 const statsData = {
@@ -483,88 +558,51 @@ async function seedDatabase() {
     }
     console.log("Cleared existing data");
 
-    // Seed departments
     for (const dept of departments) {
       await addDoc(collection(db, 'departments'), dept);
     }
-    console.log(`Added ${departments.length} departments`);
+    console.log(`Added ${departments.length} departments with images`);
 
-    // Seed faculty
     for (const fac of facultyData) {
       await addDoc(collection(db, 'faculty'), fac);
     }
     console.log(`Added ${facultyData.length} faculty members`);
 
-    // Seed news
     for (const news of newsData) {
       await addDoc(collection(db, 'news'), news);
     }
     console.log(`Added ${newsData.length} news items`);
 
-    // Seed announcements
     for (const ann of announcementsData) {
       await addDoc(collection(db, 'announcements'), ann);
     }
     console.log(`Added ${announcementsData.length} announcements`);
 
-    // Seed notices
     for (const notice of noticesData) {
       await addDoc(collection(db, 'notices'), notice);
     }
     console.log(`Added ${noticesData.length} notices`);
 
-    // Seed events
     for (const event of eventsData) {
       await addDoc(collection(db, 'events'), event);
     }
     console.log(`Added ${eventsData.length} events`);
 
-    // Seed stats
     await addDoc(collection(db, 'stats'), statsData);
     console.log("Added stats");
 
-    // Seed syllabus
     for (const syl of syllabusData) {
       await addDoc(collection(db, 'syllabus'), syl);
     }
     console.log(`Added ${syllabusData.length} syllabus records`);
 
-    // Seed leadership
-    for (const lead of leadershipData) {
-      await addDoc(collection(db, 'leadership'), lead);
-    }
-    console.log(`Added ${leadershipData.length} leadership members`);
+    await addDoc(collection(db, 'quickLinks'), { links: quickLinksData });
+    console.log("Added quick links");
 
-    // Seed gallery
-    for (const gal of galleryData) {
-      await addDoc(collection(db, 'gallery'), gal);
-    }
-    console.log(`Added ${galleryData.length} gallery items`);
-
-    // Seed quick links
-    for (const ql of quickLinksData) {
-      await addDoc(collection(db, 'quickLinks'), ql);
-    }
-    console.log(`Added ${quickLinksData.length} quick links`);
-
-    // Seed contact info
     await addDoc(collection(db, 'contactInfo'), contactInfoData);
     console.log("Added contact info");
 
     console.log("\n Database seeding completed successfully!");
-    console.log("\n Collections created:");
-    console.log("  - departments (12)");
-    console.log("  - faculty (36)");
-    console.log("  - news (10)");
-    console.log("  - announcements (10)");
-    console.log("  - notices (10)");
-    console.log("  - events (12)");
-    console.log("  - syllabus (12)");
-    console.log("  - leadership (3)");
-    console.log("  - gallery (10)");
-    console.log("  - quickLinks (8)");
-    console.log("  - stats (1)");
-    console.log("  - contactInfo (1)");
     
   } catch (error) {
     console.error("Error seeding database:", error);
