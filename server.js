@@ -52,21 +52,21 @@ app.get('/api/all', async (req, res) => {
     const cached = getCached('all');
     if (cached) return res.json(cached);
     
-    const [departments, faculty, news, announcements, events, stats] = await Promise.all([
+    const [departments, news, announcements, events, notices, stats] = await Promise.all([
       getDocs(collection(db, 'departments')),
-      getDocs(collection(db, 'faculty')),
       getDocs(collection(db, 'news')),
       getDocs(collection(db, 'announcements')),
       getDocs(collection(db, 'events')),
+      getDocs(collection(db, 'notices')),
       getDocs(collection(db, 'stats'))
     ]);
 
     const data = {
       departments: departments.docs.map(d => ({ id: d.id, ...d.data() })),
-      faculty: faculty.docs.map(d => ({ id: d.id, ...d.data() })),
       news: news.docs.map(d => ({ id: d.id, ...d.data() })),
       announcements: announcements.docs.map(d => ({ id: d.id, ...d.data() })),
       events: events.docs.map(d => ({ id: d.id, ...d.data() })),
+      notices: notices.docs.map(d => ({ id: d.id, ...d.data() })),
       stats: stats.docs[0]?.data() || {}
     };
     
