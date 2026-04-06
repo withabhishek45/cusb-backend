@@ -1,19 +1,37 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy } from 'firebase/firestore';
-import { db } from './firebase.js';
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, query, where } from 'firebase/firestore';
 
 dotenv.config();
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAHu90nH0kTqhcnhg9mpOeE-HKbzi-J24k",
+  authDomain: "cusb-backend.firebaseapp.com",
+  projectId: "cusb-backend",
+  storageBucket: "cusb-backend.firebasestorage.app",
+  messagingSenderId: "120273485140",
+  appId: "1:120273485140:web:569c9636442716e6021cc1",
+  measurementId: "G-6KQ918PBW5"
+};
+
+const appFirebase = initializeApp(firebaseConfig);
+const db = getFirestore(appFirebase);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const cache = new Map();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL = 5 * 60 * 1000;
 
 function getCached(key) {
   const item = cache.get(key);
@@ -29,8 +47,20 @@ function setCache(key, data) {
   cache.set(key, { data, timestamp: Date.now() });
 }
 
+function handleError(res, error) {
+  console.error('API Error:', error);
+  res.status(500).json({ 
+    error: error.message,
+    stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+  });
+}
+
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    message: 'Backend is running!'
+  });
 });
 
 app.get('/api/stats', async (req, res) => {
@@ -73,35 +103,7 @@ app.get('/api/all', async (req, res) => {
     setCache('all', data);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/leadership', async (req, res) => {
-  try {
-    const cached = getCached('leadership');
-    if (cached) return res.json(cached);
-    
-    const snapshot = await getDocs(collection(db, 'leadership'));
-    const leadership = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setCache('leadership', leadership);
-    res.json(leadership);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/leadership/:id', async (req, res) => {
-  try {
-    const docRef = doc(db, 'leadership', req.params.id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      res.json({ id: docSnap.id, ...docSnap.data() });
-    } else {
-      res.status(404).json({ error: 'Not found' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 });
 
@@ -111,11 +113,11 @@ app.get('/api/departments', async (req, res) => {
     if (cached) return res.json(cached);
     
     const snapshot = await getDocs(collection(db, 'departments'));
-    const departments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const departments = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     setCache('departments', departments);
     res.json(departments);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 });
 
@@ -135,79 +137,7 @@ app.get('/api/departments/:id', async (req, res) => {
       res.status(404).json({ error: 'Department not found' });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/faculty', async (req, res) => {
-  try {
-    const { department } = req.query;
-    const cacheKey = department ? `faculty_${department}` : 'faculty_all';
-    
-    const cached = getCached(cacheKey);
-    if (cached) return res.json(cached);
-    
-    let snapshot;
-    if (department) {
-      snapshot = await getDocs(query(collection(db, 'faculty'), where('department', '==', department)));
-    } else {
-      snapshot = await getDocs(collection(db, 'faculty'));
-    }
-    const faculty = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setCache(cacheKey, faculty);
-    res.json(faculty);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/news', async (req, res) => {
-  try {
-    const cached = getCached('news');
-    if (cached) return res.json(cached);
-    
-    const snapshot = await getDocs(collection(db, 'news'));
-    const news = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setCache('news', news);
-    res.json(news);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/announcements', async (req, res) => {
-  try {
-    const cached = getCached('announcements');
-    if (cached) return res.json(cached);
-    
-    const snapshot = await getDocs(collection(db, 'announcements'));
-    const announcements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setCache('announcements', announcements);
-    res.json(announcements);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/events', async (req, res) => {
-  try {
-    const { type } = req.query;
-    const cacheKey = type ? `events_${type}` : 'events_all';
-    
-    const cached = getCached(cacheKey);
-    if (cached) return res.json(cached);
-    
-    let snapshot;
-    if (type) {
-      snapshot = await getDocs(query(collection(db, 'events'), where('type', '==', type)));
-    } else {
-      snapshot = await getDocs(collection(db, 'events'));
-    }
-    const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setCache(cacheKey, events);
-    res.json(events);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 });
 
@@ -217,35 +147,84 @@ app.get('/api/notices', async (req, res) => {
     if (cached) return res.json(cached);
     
     const snapshot = await getDocs(collection(db, 'notices'));
-    const notices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const notices = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     setCache('notices', notices);
     res.json(notices);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
+  }
+});
+
+app.get('/api/news', async (req, res) => {
+  try {
+    const cached = getCached('news');
+    if (cached) return res.json(cached);
+    
+    const snapshot = await getDocs(collection(db, 'news'));
+    const news = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    setCache('news', news);
+    res.json(news);
+  } catch (error) {
+    handleError(res, error);
+  }
+});
+
+app.get('/api/announcements', async (req, res) => {
+  try {
+    const cached = getCached('announcements');
+    if (cached) return res.json(cached);
+    
+    const snapshot = await getDocs(collection(db, 'announcements'));
+    const announcements = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    setCache('announcements', announcements);
+    res.json(announcements);
+  } catch (error) {
+    handleError(res, error);
+  }
+});
+
+app.get('/api/events', async (req, res) => {
+  try {
+    const cached = getCached('events');
+    if (cached) return res.json(cached);
+    
+    const snapshot = await getDocs(collection(db, 'events'));
+    const events = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    setCache('events', events);
+    res.json(events);
+  } catch (error) {
+    handleError(res, error);
   }
 });
 
 app.get('/api/syllabus', async (req, res) => {
   try {
     const { department, program } = req.query;
-    const cacheKey = `syllabus_${department}_${program}`;
+    let q = collection(db, 'syllabus');
     
-    const cached = getCached(cacheKey);
-    if (cached) return res.json(cached);
-    
-    let snapshot;
-    if (department && program) {
-      snapshot = await getDocs(query(collection(db, 'syllabus'), where('department', '==', department), where('program', '==', program)));
-    } else if (department) {
-      snapshot = await getDocs(query(collection(db, 'syllabus'), where('department', '==', department)));
-    } else {
-      snapshot = await getDocs(collection(db, 'syllabus'));
+    if (department) {
+      q = query(collection(db, 'syllabus'), where('department', '==', department));
     }
-    const syllabus = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setCache(cacheKey, syllabus);
+    
+    const snapshot = await getDocs(q);
+    const syllabus = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     res.json(syllabus);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
+  }
+});
+
+app.get('/api/leadership', async (req, res) => {
+  try {
+    const cached = getCached('leadership');
+    if (cached) return res.json(cached);
+    
+    const snapshot = await getDocs(collection(db, 'leadership'));
+    const leadership = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    setCache('leadership', leadership);
+    res.json(leadership);
+  } catch (error) {
+    handleError(res, error);
   }
 });
 
@@ -255,39 +234,11 @@ app.get('/api/gallery', async (req, res) => {
     if (cached) return res.json(cached);
     
     const snapshot = await getDocs(collection(db, 'gallery'));
-    const gallery = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const gallery = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     setCache('gallery', gallery);
     res.json(gallery);
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/quickLinks', async (req, res) => {
-  try {
-    const cached = getCached('quickLinks');
-    if (cached) return res.json(cached);
-    
-    const snapshot = await getDocs(collection(db, 'quickLinks'));
-    const links = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setCache('quickLinks', links);
-    res.json(links);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/contactInfo', async (req, res) => {
-  try {
-    const cached = getCached('contactInfo');
-    if (cached) return res.json(cached);
-    
-    const snapshot = await getDocs(collection(db, 'contactInfo'));
-    const info = snapshot.docs[0]?.data() || null;
-    setCache('contactInfo', info);
-    res.json(info);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 });
 
@@ -301,87 +252,36 @@ app.post('/api/contact', async (req, res) => {
     cache.clear();
     res.json({ success: true, message: 'Thank you for contacting us!' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    handleError(res, error);
   }
 });
 
-app.post('/api/departments', async (req, res) => {
-  try {
-    cache.delete('departments');
-    cache.delete('all');
-    const docRef = await addDoc(collection(db, 'departments'), req.body);
-    res.json({ id: docRef.id, ...req.body });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.get('/', (req, res) => {
+  res.json({
+    name: 'CUSB Backend API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: [
+      '/api/health',
+      '/api/all',
+      '/api/departments',
+      '/api/notices',
+      '/api/news',
+      '/api/announcements',
+      '/api/events',
+      '/api/syllabus',
+      '/api/leadership',
+      '/api/gallery',
+      '/api/contact'
+    ]
+  });
 });
 
-app.post('/api/faculty', async (req, res) => {
-  try {
-    cache.clear();
-    const docRef = await addDoc(collection(db, 'faculty'), req.body);
-    res.json({ id: docRef.id, ...req.body });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post('/api/news', async (req, res) => {
-  try {
-    cache.delete('news');
-    cache.delete('all');
-    const docRef = await addDoc(collection(db, 'news'), req.body);
-    res.json({ id: docRef.id, ...req.body });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post('/api/announcements', async (req, res) => {
-  try {
-    cache.delete('announcements');
-    cache.delete('all');
-    const docRef = await addDoc(collection(db, 'announcements'), req.body);
-    res.json({ id: docRef.id, ...req.body });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post('/api/notices', async (req, res) => {
-  try {
-    cache.delete('notices');
-    const docRef = await addDoc(collection(db, 'notices'), req.body);
-    res.json({ id: docRef.id, ...req.body });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.put('/api/departments/:id', async (req, res) => {
-  try {
-    cache.delete('departments');
-    cache.delete(`dept_${req.params.id}`);
-    cache.delete('all');
-    await updateDoc(doc(db, 'departments', req.params.id), req.body);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.delete('/api/departments/:id', async (req, res) => {
-  try {
-    cache.delete('departments');
-    cache.delete(`dept_${req.params.id}`);
-    cache.delete('all');
-    await deleteDoc(doc(db, 'departments', req.params.id));
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint not found' });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`CUSB Backend running on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/api/health`);
 });
