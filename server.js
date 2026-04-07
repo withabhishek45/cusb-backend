@@ -133,6 +133,26 @@ app.get('/api/departments', async (req, res) => {
   }
 });
 
+app.get('/api/department/:id', async (req, res) => {
+  try {
+    const cacheKey = `dept_${req.params.id}`;
+    const cached = getCached(cacheKey);
+    if (cached) return res.json(cached);
+    
+    const docRef = doc(db, 'departments', req.params.id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = { id: docSnap.id, ...docSnap.data() };
+      setCache(cacheKey, data);
+      res.json(data);
+    } else {
+      res.status(404).json({ error: 'Department not found' });
+    }
+  } catch (error) {
+    handleError(res, error);
+  }
+});
+
 app.get('/api/departments/:id', async (req, res) => {
   try {
     const cacheKey = `dept_${req.params.id}`;
