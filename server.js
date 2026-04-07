@@ -75,6 +75,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api/clear-cache', (req, res) => {
+  cache.clear();
+  res.json({ success: true, message: 'Cache cleared' });
+});
+
 app.get('/api/stats', async (req, res) => {
   try {
     const cached = getCached('stats');
