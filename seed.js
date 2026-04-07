@@ -746,14 +746,14 @@ const noticesData = [
 ];
 
 const announcementsData = [
-  { title: "Admissions Open for 2026-27", subtitle: "Apply Now", date: "1 Apr 2026", type: "high" },
-  { title: "Fellowship 2026 - Applications Extended", subtitle: "Deadline: 30th April", date: "28 Mar 2026", type: "high" },
-  { title: "Research Grant Opportunities Available", subtitle: "For Faculty Members", date: "25 Mar 2026", type: "medium" },
-  { title: "Annual Fest 2026 Registration", subtitle: "Register by 15th April", date: "20 Mar 2026", type: "low" },
-  { title: "Campus Placement Drive", subtitle: "TCS, Infosys on 25th April", date: "15 Mar 2026", type: "high" },
-  { title: "National Science Day Celebration", subtitle: "28th February", date: "25 Feb 2026", type: "medium" },
-  { title: "Library Extended Hours", subtitle: "During Exam Season", date: "20 Feb 2026", type: "low" },
-  { title: "Yoga and Meditation Classes", subtitle: "For Students", date: "15 Feb 2026", type: "low" }
+  { title: "Semester Registration for Jan-June 2026", subtitle: "Last Date: 10th January", date: "10-Jan-26", type: "high" },
+  { title: "Backlog Form Submission", subtitle: "Last Date: 2nd April 2026", date: "02-April-26", type: "high" },
+  { title: "SAMARTH Portal Registration Mandatory", subtitle: "All students must register", date: "05-Feb-26", type: "high" },
+  { title: "Ph.D. Document Verification", subtitle: "For AY 2025-26", date: "21-Jan-26", type: "medium" },
+  { title: "Ph.D. Supervisor Allotment", subtitle: "Allotment process started", date: "21-Jan-26", type: "medium" },
+  { title: "PM-Vidyalaxmi Scholarship Schemes", subtitle: "Apply for student welfare", date: "23-Apr-25", type: "medium" },
+  { title: "Six-Monthly Progress Reports Due", subtitle: "For July-December 2025", date: "21-Jan-26", type: "low" },
+  { title: "Supplementary Exam Schedule Released", subtitle: "For PG & Agriculture programmes", date: "30-July-25", type: "high" }
 ];
 
 const eventsData = [
@@ -772,10 +772,11 @@ const statsData = { students: 4500, staff: 220, courses: 85, projects: 120, publ
 async function seedDatabase() {
   console.log("Starting comprehensive database seeding...");
   try {
-    const collections = ['departments', 'syllabus', 'news', 'notices', 'events', 'stats'];
+    const collections = ['departments', 'syllabus', 'news', 'notices', 'events', 'stats', 'announcements'];
     for (const col of collections) {
       const snapshot = await getDocs(collection(db, col));
-      for (const document of snapshot.docs) { await deleteDoc(document.ref); }
+      const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
     }
     console.log("Cleared existing data");
 
