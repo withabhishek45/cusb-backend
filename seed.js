@@ -15,6 +15,35 @@ const db = getFirestore(app);
 
 const departments = [
   {
+    id: "computer-science",
+    name: "Department of Computer Science",
+    shortName: "Computer Science",
+    description: "The Department of Computer Science offers programs covering software development, artificial intelligence, data science, cybersecurity, and cloud computing.",
+    programs: ["B.Sc. (Hons) Computer Science", "M.Sc. Computer Science", "MSc. AI", "Ph.D. Computer Science"],
+    established: 2014,
+    hod: "Prof. Prabhat Ranjan",
+    email: "computerscience@cusb.ac.in",
+    phone: "+91-631-2223516",
+    vision: "To be a center of excellence in computer science education and research.",
+    mission: "To provide state-of-the-art education in computing fundamentals and emerging technologies.",
+    objectives: ["Provide comprehensive CS education", "Promote research in AI and ML", "Develop industry-ready professionals", "Foster innovation and entrepreneurship"],
+    facilities: ["High-Performance Computing Lab", "AI/ML Lab", "Cybersecurity Lab", "Cloud Computing Lab", "Project Lab", "Software Development Lab"],
+    images: ["https://www.cusb.ac.in/images/dept/computer_science/Lab_Photo_dept1.jpg"],
+    studentCount: 300,
+    placementRate: 95,
+    researchPapers: 200,
+    fundedProjects: 25,
+    researchGrants: 120,
+    faculty: [
+      { name: "Prof. Prabhat Ranjan", designation: "Professor and Head", email: "prabhatranjan@cusb.ac.in", phone: "+91-631-2223535", image: "https://www.cusb.ac.in/images/dept/computer_science/1.jpg", specialization: "Big Data, Distributed System, Software Engineering", qualification: "M. Tech (MNNIT Allahabad, 2004), Ph. D. (MNNIT Allahabad, 2010)", experience: "20 years", publications: 85, researchInterests: "Big Data, Distributed Systems, Software Engineering", awards: "" },
+      { name: "Dr. Jainath Yadav", designation: "Associate Professor", email: "jainath@cusb.ac.in", phone: "+91-631-2223536", image: "https://www.cusb.ac.in/images/dept/computer_science/2.jpg", specialization: "Speech signal processing, machine learning, image and audio watermarking", qualification: "M. Tech and PhD from IIT Kharagpur", experience: "10 years", publications: 45, researchInterests: "Speech Signal Processing, Machine Learning, Watermarking", awards: "" },
+      { name: "Dr. Nemi Chandra Rathore", designation: "Associate Professor", email: "nemichandra@cusb.ac.in", phone: "+91-631-2223537", image: "https://www.cusb.ac.in/images/dept/computer_science/3.jpg", specialization: "Security and Privacy in Online Social Networks", qualification: "M Tech (IT), PhD (IIT Patna)", experience: "14 years", publications: 55, researchInterests: "Privacy & Security in Online Social Networks, Network Security, Machine Learning", awards: "" },
+      { name: "Dr. Piyush Kumar Singh", designation: "Assistant Professor", email: "piyush@cusb.ac.in", phone: "+91-631-2223538", image: "https://www.cusb.ac.in/images/dept/computer_science/4.jpg", specialization: "Image Processing, Parallel Computing, Wavelet Transform", qualification: "Ph.D. (BHU)", experience: "8 years", publications: 30, researchInterests: "Image Processing, Parallel Computing, Wavelet Transform", awards: "" },
+      { name: "Dr. Mrityunjay Singh", designation: "Assistant Professor", email: "mrityunjaysingh@cusb.ac.in", phone: "+91-631-2223539", image: "https://www.cusb.ac.in/images/dept/computer_science/5.jpg", specialization: "Theoretical Computer Science, Discrete Mathematics, Algorithms, Cryptography and Security", qualification: "Ph. D. (IIT Guwahati, 2020)", experience: "4 years", publications: 25, researchInterests: "Theoretical Computer Science, Cryptography, Security", awards: "" },
+      { name: "Dr. Prakash Kumar", designation: "Assistant Professor", email: "prakash@cusb.ac.in", phone: "+91-631-2223540", image: "https://www.cusb.ac.in/images/dept/computer_science/drprakash_1.jpeg", specialization: "Network Security, Data Communication and Computer Networks", qualification: "Ph. D. (B.R.A.B.U, 2015)", experience: "18 years", publications: 40, researchInterests: "Network Security, Data Communication, Computer Networks", awards: "" }
+    ]
+  },
+  {
     id: "agriculture",
     name: "Department of Agriculture",
     shortName: "Agriculture",
@@ -141,35 +170,6 @@ const departments = [
       { name: "Dr. Meena Sharma", designation: "Professor & Head", email: "meena.com@cusb.ac.in", phone: "+91-631-2223550", image: "https://picsum.photos/seed/faccom1/400/400", specialization: "Finance", qualification: "Ph.D. (Delhi University), MBA Finance, CA", experience: "18 years", publications: 55, researchInterests: "Corporate Finance, Financial Markets, Auditing", awards: "Best Teacher Award 2020" },
       { name: "Dr. Ajay Kumar", designation: "Associate Professor", email: "ajay.com@cusb.ac.in", phone: "+91-631-2223551", image: "https://picsum.photos/seed/faccom2/400/400", specialization: "Marketing", qualification: "Ph.D. (BHU), MBA Marketing", experience: "12 years", publications: 40, researchInterests: "Digital Marketing, Consumer Behavior, Brand Management", awards: "Best Researcher Award 2021" },
       { name: "Dr. Priyanka Singh", designation: "Assistant Professor", email: "priyanka.com@cusb.ac.in", phone: "+91-631-2223552", image: "https://picsum.photos/seed/faccom3/400/400", specialization: "Taxation", qualification: "Ph.D. (Lucknow University), M.Com, CA", experience: "7 years", publications: 20, researchInterests: "GST, Income Tax, Corporate Tax Planning", awards: "" }
-    ]
-  },
-  {
-    id: "computer-science",
-    name: "Department of Computer Science",
-    shortName: "Computer Science",
-    description: "The Department of Computer Science offers programs covering software development, artificial intelligence, data science, cybersecurity, and cloud computing.",
-    programs: ["B.Sc. (Hons) Computer Science", "M.Sc. Computer Science", "MSc. AI", "Ph.D. Computer Science"],
-    established: 2014,
-    hod: "Prof. Prabhat Ranjan",
-    email: "computerscience@cusb.ac.in",
-    phone: "+91-631-2223516",
-    vision: "To be a center of excellence in computer science education and research.",
-    mission: "To provide state-of-the-art education in computing fundamentals and emerging technologies.",
-    objectives: ["Provide comprehensive CS education", "Promote research in AI and ML", "Develop industry-ready professionals", "Foster innovation and entrepreneurship"],
-    facilities: ["High-Performance Computing Lab", "AI/ML Lab", "Cybersecurity Lab", "Cloud Computing Lab", "Project Lab", "Software Development Lab"],
-    images: ["https://www.cusb.ac.in/images/dept/computer_science/Lab_Photo_dept1.jpg"],
-    studentCount: 300,
-    placementRate: 95,
-    researchPapers: 200,
-    fundedProjects: 25,
-    researchGrants: 120,
-    faculty: [
-      { name: "Prof. Prabhat Ranjan", designation: "Professor and Head", email: "prabhatranjan@cusb.ac.in", phone: "+91-631-2223535", image: "https://www.cusb.ac.in/images/dept/computer_science/1.jpg", specialization: "Big Data, Distributed System, Software Engineering", qualification: "M. Tech (MNNIT Allahabad, 2004), Ph. D. (MNNIT Allahabad, 2010)", experience: "20 years", publications: 85, researchInterests: "Big Data, Distributed Systems, Software Engineering", awards: "" },
-      { name: "Dr. Jainath Yadav", designation: "Associate Professor", email: "jainath@cusb.ac.in", phone: "+91-631-2223536", image: "https://www.cusb.ac.in/images/dept/computer_science/2.jpg", specialization: "Speech signal processing, machine learning, image and audio watermarking", qualification: "M. Tech and PhD from IIT Kharagpur", experience: "10 years", publications: 45, researchInterests: "Speech Signal Processing, Machine Learning, Watermarking", awards: "" },
-      { name: "Dr. Nemi Chandra Rathore", designation: "Associate Professor", email: "nemichandra@cusb.ac.in", phone: "+91-631-2223537", image: "https://www.cusb.ac.in/images/dept/computer_science/3.jpg", specialization: "Security and Privacy in Online Social Networks", qualification: "M Tech (IT), PhD (IIT Patna)", experience: "14 years", publications: 55, researchInterests: "Privacy & Security in Online Social Networks, Network Security, Machine Learning", awards: "" },
-      { name: "Dr. Piyush Kumar Singh", designation: "Assistant Professor", email: "piyush@cusb.ac.in", phone: "+91-631-2223538", image: "https://www.cusb.ac.in/images/dept/computer_science/4.jpg", specialization: "Image Processing, Parallel Computing, Wavelet Transform", qualification: "Ph.D. (BHU)", experience: "8 years", publications: 30, researchInterests: "Image Processing, Parallel Computing, Wavelet Transform", awards: "" },
-      { name: "Dr. Mrityunjay Singh", designation: "Assistant Professor", email: "mrityunjaysingh@cusb.ac.in", phone: "+91-631-2223539", image: "https://www.cusb.ac.in/images/dept/computer_science/5.jpg", specialization: "Theoretical Computer Science, Discrete Mathematics, Algorithms, Cryptography and Security", qualification: "Ph. D. (IIT Guwahati, 2020)", experience: "4 years", publications: 25, researchInterests: "Theoretical Computer Science, Cryptography, Security", awards: "" },
-      { name: "Dr. Prakash Kumar", designation: "Assistant Professor", email: "prakash@cusb.ac.in", phone: "+91-631-2223540", image: "https://www.cusb.ac.in/images/dept/computer_science/drprakash_1.jpeg", specialization: "Network Security, Data Communication and Computer Networks", qualification: "Ph. D. (B.R.A.B.U, 2015)", experience: "18 years", publications: 40, researchInterests: "Network Security, Data Communication, Computer Networks", awards: "" }
     ]
   },
   {
