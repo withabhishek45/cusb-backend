@@ -144,9 +144,10 @@ app.get('/api/department/:id', async (req, res) => {
     const cached = getCached(cacheKey);
     if (cached) return res.json(cached);
     
-    const docRef = doc(db, 'departments', req.params.id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
+    const q = query(collection(db, 'departments'), where('id', '==', req.params.id));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const docSnap = snapshot.docs[0];
       const data = { id: docSnap.id, ...docSnap.data() };
       setCache(cacheKey, data);
       res.json(data);
@@ -164,9 +165,10 @@ app.get('/api/departments/:id', async (req, res) => {
     const cached = getCached(cacheKey);
     if (cached) return res.json(cached);
     
-    const docRef = doc(db, 'departments', req.params.id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
+    const q = query(collection(db, 'departments'), where('id', '==', req.params.id));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const docSnap = snapshot.docs[0];
       const data = { id: docSnap.id, ...docSnap.data() };
       setCache(cacheKey, data);
       res.json(data);
